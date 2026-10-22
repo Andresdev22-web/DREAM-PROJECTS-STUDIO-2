@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+/* Detectar las clases de Tailwind de lity-ui */
+@source "../../node_modules/lity-ui";
+

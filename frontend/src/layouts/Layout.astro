@@ -1,0 +1,24 @@
+
+---
+import "../style/global.css";
+import { LayoutLandingPage, Header } from "lity-ui";
+
+const GOOGLE_CLIENT_ID =
+  "711422571578-b9s5pq7oi0gtgmml3s1dk44fbhfj9663.apps.googleusercontent.com";
+---
+
+<LayoutLandingPage titlePage="Iniciar sesión | DREAM PROJECTS STUDIO">
+  <Header
+    slot="header"
+    title="DREAM PROJECTS STUDIO"
+    logoIcon="lucide:gamepad-2"
+    showNavigation={true}
+    navigationTitle="Navegación"
+    navigationLinks={[
+      { label: "Inicio", href: "/#inicio", icon: "lucide:house" },
+    ]}
+    showThemeSelector={false}
+    sticky={true}
+  />
+
+</LayoutLandingPage>

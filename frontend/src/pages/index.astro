@@ -1,0 +1,658 @@
+---
+import "../style/global.css";
+import { LayoutLandingPage, Header } from "lity-ui";
+
+
+import logoFondo from "../assets/logo-fondo.jpeg"
+
+// --------------------------------------------------
+// CONTENIDO REUTILIZABLE
+// Puedes modificar estos datos sin cambiar el diseño.
+// --------------------------------------------------
+
+const servicios = [
+  {
+    numero: "01",
+    titulo: "Videojuegos personalizados",
+    descripcion:
+      "Creamos videojuegos en Roblox a partir de una idea, con mecánicas, objetivos, progresión y sistemas diseñados para ofrecer una experiencia propia.",
+  },
+  {
+    numero: "02",
+    titulo: "Experiencias para marcas",
+    descripcion:
+      "Transformamos conceptos de marcas, empresas y organizaciones en espacios interactivos que permiten conectar con las personas de una manera diferente.",
+  },
+  {
+    numero: "03",
+    titulo: "Mundos y comunidades",
+    descripcion:
+      "Diseñamos entornos virtuales para explorar, colaborar, compartir actividades y construir experiencias memorables junto a otros jugadores.",
+  },
+  {
+    numero: "04",
+    titulo: "Sistemas y mecánicas",
+    descripcion:
+      "Desarrollamos funcionalidades, sistemas de juego e interacciones que dan profundidad, identidad y personalidad a cada proyecto.",
+  },
+];
+
+const valores = [
+  {
+    numero: "01",
+    titulo: "Calidad en cada detalle",
+    descripcion:
+      "Buscamos que cada parte del proyecto contribuya a una experiencia coherente, cuidada y bien ejecutada.",
+  },
+  {
+    numero: "02",
+    titulo: "Creatividad con propósito",
+    descripcion:
+      "Cada idea tiene objetivos diferentes. Diseñamos soluciones que respetan la visión del cliente y aportan algo distintivo.",
+  },
+  {
+    numero: "03",
+    titulo: "Colaboración real",
+    descripcion:
+      "Creemos en el trabajo en equipo, la comunicación y la unión de distintas habilidades para alcanzar mejores resultados.",
+  },
+];
+
+const perfiles = [
+  {
+    titulo: "Programación",
+    descripcion:
+      "Desarrollo de mecánicas, sistemas de juego, herramientas y funcionalidades mediante Luau.",
+  },
+  {
+    titulo: "Construcción y diseño",
+    descripcion:
+      "Creación de mapas, escenarios, estructuras y espacios que dan vida al mundo del juego.",
+  },
+  {
+    titulo: "Modelado y arte 3D",
+    descripcion:
+      "Diseño de objetos, modelos y elementos visuales que refuerzan la identidad de cada experiencia.",
+  },
+  {
+    titulo: "Diseño de juegos",
+    descripcion:
+      "Ideas, sistemas de progresión, dinámicas y decisiones que hacen que una experiencia sea interesante.",
+  },
+];
+
+// --------------------------------------------------
+// COMPONENTES DE ESTA PÁGINA
+// Son componentes Astro locales, no páginas adicionales.
+// --------------------------------------------------
+
+const SectionHeading = Astro.self;
+
+---
+
+<LayoutLandingPage titlePage="DREAM PROJECTS STUDIO | Roblox Game Development">
+  <Header
+    slot="header"
+    title="DREAM PROJECTS STUDIO"
+    logoImg="logo.webp"
+    showNavigation={true}
+    navigationTitle="Navegación"
+    navigationLinks={[
+      { label: "Inicio", href: "#inicio", icon: "lucide:house" },
+      { label: "Nosotros", href: "#nosotros", icon: "lucide:users" },
+      { label: "Servicios", href: "#servicios", icon: "lucide:layers" },
+      { label: "Proceso", href: "#proceso", icon: "lucide:workflow" },
+      { label: "Únete al equipo", href: "#equipo", icon: "lucide:user-plus" },
+      { label: "Contacto", href: "#contacto", icon: "lucide:mail" },
+    ]}
+    showThemeSelector={true}
+    sticky={true}
+  />
+  <!-- Forzar la detección de clases responsive de Tailwind -->
+<div class="hidden min-w-0 items-center gap-1 min-[900px]:flex min-[900px]:hidden"></div>
+
+  <main>
+    <!-- =================================================
+         COMPONENTE: HERO
+         Presentación principal de la empresa.
+    ================================================== -->
+
+
+<section
+  id="inicio"
+  class="relative isolate overflow-hidden border-t border-[var(--border-color)] bg-[var(--bg-primary)] px-6 py-24"
+>
+  <!-- Fondo de imagen a pantalla completa -->
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+    aria-hidden="true"
+  >
+    <img
+      src={logoFondo.src}
+      alt=""
+      class="absolute inset-0 h-full w-full object-cover object-center opacity-90"
+    />
+
+    <!-- Degradado oscuro para mantener la lectura del texto -->
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] via-[var(--bg-primary)]/85 via-45% to-transparent"
+    ></div>
+
+    <!-- Degradado vertical -->
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)]/80 via-transparent to-[var(--bg-primary)]/40"
+    ></div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div
+    class="mx-auto flex min-h-[650px] max-w-7xl items-center md:min-h-[680px]"
+  >
+    <div class="relative z-10 w-full">
+      <!-- Etiqueta superior -->
+      <span
+        class="inline-flex items-center gap-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)]/80 px-4 py-2 text-sm font-semibold text-[var(--text-secondary)] backdrop-blur-md"
+      >
+        <span class="h-2 w-2 rounded-full bg-[var(--accent)]"></span>
+        Estudio de desarrollo de videojuegos en Roblox
+      </span>
+
+      <!-- Título principal -->
+      <h1
+        class="mt-6 max-w-4xl text-4xl font-bold leading-tight tracking-tight text-[var(--text-primary)] sm:text-5xl md:text-6xl lg:text-7xl"
+      >
+        No solo creamos juegos.
+        <span class="mt-3 block text-[var(--accent)]">
+          Creamos experiencias que dejan huella.
+        </span>
+      </h1>
+
+      <!-- Descripción -->
+      <p
+        class="mt-6 max-w-2xl text-base leading-7 text-[var(--text-secondary)] sm:text-lg sm:leading-8"
+      >
+        En DREAM PROJECTS STUDIO convertimos ideas en videojuegos y mundos
+        interactivos dentro de Roblox. Creamos experiencias originales para
+        marcas, empresas, comunidades y personas con una visión que merece
+        hacerse realidad.
+      </p>
+
+      <!-- Botones de acción -->
+      <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+        <a
+          href="/contratacion/solicitud"
+          class="inline-flex items-center justify-center gap-3 rounded-xl bg-[var(--accent)] px-6 py-4 font-semibold text-white transition hover:brightness-110"
+        >
+          Únete al equipo
+          <span aria-hidden="true">→</span>
+        </a>
+
+        <a
+          href="#contacto"
+          class="inline-flex items-center justify-center gap-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)]/80 px-6 py-4 font-semibold text-[var(--text-primary)] backdrop-blur-md transition hover:border-[var(--accent)]"
+        >
+          Hablemos de tu proyecto
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <!-- Características del estudio -->
+      <div
+        class="mt-12 grid grid-cols-1 gap-6 border-t border-[var(--border-color)] pt-8 sm:grid-cols-3"
+      >
+        <div>
+          <p class="font-bold text-[var(--text-primary)]">
+            Ideas originales
+          </p>
+          <p class="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+            Cada proyecto comienza con una visión única.
+          </p>
+        </div>
+
+        <div>
+          <p class="font-bold text-[var(--text-primary)]">
+            Desarrollo especializado
+          </p>
+          <p class="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+            Diseño y programación trabajando en conjunto.
+          </p>
+        </div>
+
+        <div>
+          <p class="font-bold text-[var(--text-primary)]">
+            Experiencias memorables
+          </p>
+          <p class="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+            Mundos creados para destacar y conectar.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+    <!-- =================================================
+         COMPONENTE: PRESENTACIÓN DEL ESTUDIO Y FUNDADOR
+    ================================================== -->
+    <section
+      id="nosotros"
+      class="border-t border-[var(--border-color)] bg-[var(--bg-secondary)] px-6 py-24"
+    >
+      <div class="mx-auto max-w-6xl">
+        <div class="grid gap-12 md:grid-cols-2 md:items-start">
+          <div>
+            <span
+              class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+            >
+              La visión detrás del estudio
+            </span>
+
+            <h2
+              class="mt-4 text-4xl font-bold tracking-tight text-[var(--text-primary)] md:text-6xl"
+            >
+              ZYVAN<span class="text-[var(--accent)]">.</span>
+            </h2>
+
+            <p class="mt-4 text-base leading-7 text-[var(--text-secondary)]">
+              Fundador de DREAM PROJECTS STUDIO · Scripter · Diseñador de juegos
+            </p>
+
+            <div
+              class="mt-8 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-6"
+            >
+              <span
+                class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+              >
+                Experiencia
+              </span>
+
+              <p class="mt-3 text-4xl font-bold text-[var(--text-primary)]">
+                4<span class="text-[var(--accent)]">+</span>
+              </p>
+
+              <p class="mt-2 leading-7 text-[var(--text-secondary)]">
+                Años de experiencia y participación en numerosos proyectos.
+              </p>
+            </div>
+
+            <div class="mt-8 border-l-2 border-[var(--accent)] pl-5">
+              <p
+                class="text-xl font-bold leading-8 text-[var(--text-primary)] md:text-2xl"
+              >
+                Visión sin límites.
+                <br />
+                Calidad sin concesiones.
+                <br />
+                <span class="text-[var(--accent)]">
+                  Un legado en construcción.
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <span
+              class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+            >
+              Nuestra filosofía
+            </span>
+
+            <h3
+              class="mt-4 text-3xl font-bold leading-tight text-[var(--text-primary)] md:text-4xl"
+            >
+              No buscamos seguir tendencias.
+              <span class="text-[var(--accent)]">
+                Buscamos marcar la diferencia.
+              </span>
+            </h3>
+
+            <p class="mt-6 leading-8 text-[var(--text-secondary)]">
+              DREAM PROJECTS STUDIO nace de una visión: crear experiencias
+              que no se limiten a funcionar, sino que tengan identidad,
+              propósito y algo especial que ofrecer a quienes las juegan.
+            </p>
+
+            <p class="mt-5 leading-8 text-[var(--text-secondary)]">
+              Desde la programación y el diseño hasta la construcción de
+              mundos interactivos, buscamos que cada decisión contribuya
+              a una experiencia completa. No se trata únicamente de reunir
+              funcionalidades, sino de dar forma a una idea y convertirla
+              en algo que las personas quieran explorar, recordar y compartir.
+            </p>
+
+            <p class="mt-5 leading-8 text-[var(--text-secondary)]">
+              Bajo la dirección de ZYVAN, el estudio apuesta por la
+              innovación, la mejora constante y la colaboración entre
+              personas con distintas habilidades. Queremos construir una
+              identidad reconocible y elevar nuestros estándares con cada
+              nuevo proyecto.
+            </p>
+
+            <div
+              class="mt-8 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-6"
+            >
+              <p
+                class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+              >
+                DREAM PROJECTS STUDIO
+              </p>
+
+              <p
+                class="mt-3 text-lg font-bold leading-8 text-[var(--text-primary)]"
+              >
+                Cada proyecto es una oportunidad para crear algo
+                extraordinario.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================
+         COMPONENTE: SERVICIOS
+    ================================================== -->
+    <section
+      id="servicios"
+      class="border-t border-[var(--border-color)] px-6 py-24"
+    >
+      <div class="mx-auto max-w-6xl">
+        <span
+          class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+        >
+          Qué hacemos
+        </span>
+
+        <h2
+          class="mt-4 max-w-3xl text-3xl font-bold text-[var(--text-primary)] md:text-5xl"
+        >
+          Tu idea puede convertirse en el próximo mundo que todos quieran explorar.
+        </h2>
+
+        <p class="mt-5 max-w-2xl leading-7 text-[var(--text-secondary)]">
+          Desarrollamos proyectos personalizados en Roblox. Escuchamos la
+          propuesta, entendemos sus objetivos y trabajamos para transformarla
+          en una experiencia interactiva con personalidad propia.
+        </p>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {servicios.map((servicio) => (
+            <article
+              class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-6 transition hover:border-[var(--accent)]"
+            >
+              <span class="text-sm font-semibold text-[var(--accent)]">
+                {servicio.numero}
+              </span>
+
+              <h3 class="mt-5 text-xl font-bold text-[var(--text-primary)]">
+                {servicio.titulo}
+              </h3>
+
+              <p class="mt-3 leading-7 text-[var(--text-secondary)]">
+                {servicio.descripcion}
+              </p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================
+         COMPONENTE: PROCESO DE UN PROYECTO
+    ================================================== -->
+    <section
+      id="proceso"
+      class="border-t border-[var(--border-color)] bg-[var(--bg-secondary)] px-6 py-24"
+    >
+      <div class="mx-auto max-w-6xl">
+        <span
+          class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+        >
+          De la idea a la experiencia
+        </span>
+
+        <h2
+          class="mt-4 max-w-3xl text-3xl font-bold text-[var(--text-primary)] md:text-5xl"
+        >
+          Un proceso para convertir tu visión en un juego.
+        </h2>
+
+        <p class="mt-5 max-w-2xl leading-7 text-[var(--text-secondary)]">
+          Cada propuesta tiene sus propios retos. Por eso, buscamos comprender
+          qué quieres crear antes de definir cómo llevarlo a cabo.
+        </p>
+
+        <div class="mt-12 grid gap-8 md:grid-cols-3">
+          <article class="border-t border-[var(--border-color)] pt-6">
+            <span class="text-sm font-semibold text-[var(--accent)]">
+              PASO 01
+            </span>
+
+            <h3 class="mt-4 text-xl font-bold text-[var(--text-primary)]">
+              Cuéntanos tu idea
+            </h3>
+
+            <p class="mt-3 leading-7 text-[var(--text-secondary)]">
+              Envíanos tu propuesta, qué tipo de juego imaginas y qué te
+              gustaría conseguir con él.
+            </p>
+          </article>
+
+          <article class="border-t border-[var(--border-color)] pt-6">
+            <span class="text-sm font-semibold text-[var(--accent)]">
+              PASO 02
+            </span>
+
+            <h3 class="mt-4 text-xl font-bold text-[var(--text-primary)]">
+              Revisamos la propuesta
+            </h3>
+
+            <p class="mt-3 leading-7 text-[var(--text-secondary)]">
+              Analizamos los requisitos y evaluamos el alcance del proyecto
+              para determinar cómo podría desarrollarse.
+            </p>
+          </article>
+
+          <article class="border-t border-[var(--border-color)] pt-6">
+            <span class="text-sm font-semibold text-[var(--accent)]">
+              PASO 03
+            </span>
+
+            <h3 class="mt-4 text-xl font-bold text-[var(--text-primary)]">
+              Damos forma al proyecto
+            </h3>
+
+            <p class="mt-3 leading-7 text-[var(--text-secondary)]">
+              Si la propuesta es aceptada, podremos definir los siguientes
+              pasos para trabajar en su desarrollo.
+            </p>
+          </article>
+        </div>
+
+        <a
+          href="#contacto"
+          class="mt-10 inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-6 py-3.5 font-semibold text-white transition hover:opacity-90"
+        >
+          Presentar una idea
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- =================================================
+         COMPONENTE: INCORPORACIÓN AL EQUIPO
+    ================================================== -->
+    <section id="equipo" class="px-6 py-24">
+      <div class="mx-auto max-w-6xl">
+        <div class="grid gap-12 md:grid-cols-2 md:items-start">
+          <div>
+            <span
+              class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+            >
+              Forma parte del estudio
+            </span>
+
+            <h2
+              class="mt-4 text-3xl font-bold text-[var(--text-primary)] md:text-5xl"
+            >
+              El próximo gran proyecto también puede llevar tu talento.
+            </h2>
+
+            <p class="mt-6 leading-8 text-[var(--text-secondary)]">
+              En DREAM PROJECTS STUDIO creemos que las mejores experiencias
+              nacen cuando personas con diferentes habilidades trabajan
+              hacia una visión compartida.
+            </p>
+
+            <p class="mt-4 leading-8 text-[var(--text-secondary)]">
+              Si tienes conocimientos en programación, construcción, diseño
+              de juegos, modelado 3D u otra especialidad relacionada con
+              Roblox, puedes presentar tu solicitud para que evaluemos tu
+              perfil.
+            </p>
+
+            <p class="mt-4 leading-8 text-[var(--text-secondary)]">
+              Las personas aceptadas podrán acceder a las oportunidades
+              disponibles y solicitar participar en proyectos según sus
+              habilidades y las necesidades del estudio.
+            </p>
+
+            <a
+              href="/contratacion/solicitud"
+              class="mt-8 inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-6 py-3.5 font-semibold text-white transition hover:opacity-90"
+            >
+              Presentar mi solicitud
+              <span aria-hidden="true">→</span>
+            </a>
+
+            <p class="mt-4 text-sm text-[var(--text-muted)]">
+              Cada solicitud será revisada. Enviarla no garantiza la
+              aceptación ni la asignación automática a un proyecto.
+            </p>
+          </div>
+
+          <div
+            class="rounded-3xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-8 md:p-10"
+          >
+            <h3 class="text-xl font-bold text-[var(--text-primary)]">
+              Áreas en las que puedes aportar
+            </h3>
+
+            <div class="mt-6 space-y-6">
+              {perfiles.map((perfil, index) => (
+                <article class="flex gap-4">
+                  <span class="mt-1 text-sm font-semibold text-[var(--accent)]">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+
+                  <div>
+                    <h4 class="font-semibold text-[var(--text-primary)]">
+                      {perfil.titulo}
+                    </h4>
+
+                    <p class="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+                      {perfil.descripcion}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================
+         COMPONENTE: VALORES DEL ESTUDIO
+    ================================================== -->
+    <section
+      class="border-t border-[var(--border-color)] bg-[var(--bg-secondary)] px-6 py-24"
+    >
+      <div class="mx-auto max-w-6xl">
+        <span
+          class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+        >
+          Lo que nos define
+        </span>
+
+        <h2
+          class="mt-4 max-w-3xl text-3xl font-bold text-[var(--text-primary)] md:text-5xl"
+        >
+          La experiencia importa. La forma de construirla también.
+        </h2>
+
+        <div class="mt-12 grid gap-8 md:grid-cols-3">
+          {valores.map((valor) => (
+            <article>
+              <span class="text-sm font-semibold text-[var(--accent)]">
+                {valor.numero}
+              </span>
+
+              <h3 class="mt-4 text-xl font-bold text-[var(--text-primary)]">
+                {valor.titulo}
+              </h3>
+
+              <p class="mt-3 leading-7 text-[var(--text-secondary)]">
+                {valor.descripcion}
+              </p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================
+         COMPONENTE: CONTACTO Y PROYECTOS
+    ================================================== -->
+    <section
+      id="contacto"
+      class="border-t border-[var(--border-color)] px-6 py-24"
+    >
+      <div class="mx-auto max-w-4xl text-center">
+        <span
+          class="text-sm font-semibold uppercase tracking-widest text-[var(--accent)]"
+        >
+          Hagamos algo extraordinario
+        </span>
+
+        <h2
+          class="mt-4 text-3xl font-bold text-[var(--text-primary)] md:text-5xl"
+        >
+          Tienes una idea. Nosotros podemos ayudarte a explorarla.
+        </h2>
+
+        <p
+          class="mx-auto mt-5 max-w-2xl leading-8 text-[var(--text-secondary)]"
+        >
+          Cuéntanos qué quieres crear en Roblox. Puedes proponer un videojuego,
+          un mundo interactivo o una experiencia para tu marca, empresa o
+          comunidad. Revisaremos tu propuesta para valorar los siguientes
+          pasos.
+        </p>
+
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+          <a
+            href="/contratacion/solicitud-proyecto"
+            class="inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-6 py-3.5 font-semibold text-white transition hover:opacity-90"
+          >
+            Solicitar la creación de un juego
+            <span aria-hidden="true">→</span>
+          </a>
+
+          <a
+            href="/contratacion/solicitud"
+            class="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] px-6 py-3.5 font-semibold text-[var(--text-primary)] transition hover:bg-[var(--bg-tertiary)]"
+          >
+            Quiero unirme al equipo
+          </a>
+        </div>
+
+        <p class="mt-6 text-sm leading-6 text-[var(--text-muted)]">
+          Presentar una propuesta no garantiza su aceptación. Los detalles,
+          requisitos y condiciones se determinarán según cada proyecto.
+        </p>
+      </div>
+    </section>
+  </main>
+</LayoutLandingPage>
