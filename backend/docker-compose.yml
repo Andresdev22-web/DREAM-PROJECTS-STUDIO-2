@@ -1,3 +1,4 @@
+
 name: api-dreamProjectsStudio
 
 services:
@@ -5,10 +6,19 @@ services:
     build: .
     container_name: api_dreamProjectsStudio_app
     restart: unless-stopped
+
     env_file:
       - .env
+
+    environment:
+      DB_NAME: /app/data/app.db
+
+    volumes:
+      - ./data:/app/data
+
     networks:
       - web
+
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web"
