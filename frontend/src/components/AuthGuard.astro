@@ -1,107 +1,174 @@
-
 ---
 interface Props {
-  role?: "USUARIO" | "CLIENTE" | "SOLICITANTE" | "TRABAJADOR" | "ADMINISTRADOR";
+  roles?: string[];
 }
 
-const { role } = Astro.props;
+const { roles = [] } = Astro.props;
+
+const API_URL = import.meta.env.PUBLIC_API_URL
 ---
 
 <div
-  id="auth-guard"
-  data-required-role={role ?? ""}
-  data-api-url="https://dreamprojectsstudioapi.nanadev.online"
->
-  <p id="auth-loading">Verificando sesión...</p>
-
-  <div id="protected-content" hidden>
-    <slot />
-  </div>
-</div>
+  class="hidden"
+  aria-hidden="true"
+  data-auth-guard
+  data-api-url={API_URL}
+  data-required-roles={JSON.stringify(roles)}
+></div>
 
 <script>
-  const guard = document.querySelector<HTMLDivElement>("#auth-guard");
+  const guards = document.querySelectorAll<HTMLElement>(
+    "[data-auth-guard]"
+  );
 
-  async function protectPage() {
-    if (!guard) return;
+  guards.forEach(async (guard) => {
+    const apiUrl = guard.dataset.apiUrl;
 
-    const api = guard.dataset.apiUrl!;
-    const requiredRole = (guard.dataset.requiredRole ?? "").toUpperCase();
-    const token = localStorage.getItem("api_access_token");
-
-    const returnTo =
-      location.pathname + location.search + location.hash;
-
-    function redirect(reason: "login" | "role") {
-      const params = new URLSearchParams({
-        returnTo,
-        reason,
-      });
-
-      if (requiredRole) {
-        params.set("requiredRole", requiredRole);
-      }
-
-      location.replace(`/login?${params.toString()}`);
+    if (!apiUrl) {
+      console.error("[AuthGuard] API_URL está vacío.");
+      return;
     }
 
+    let requiredRoles: string[];
+
+    try {
+      requiredRoles = JSON.parse(
+        guard.dataset.requiredRoles || "[]"
+      );
+    } catch (error) {
+      console.error(
+        "[AuthGuard] No se pudieron leer los roles requeridos:",
+        error
+      );
+      return;
+    }
+
+    const token = localStorage.getItem("access_token");
+
+    const returnTo =
+      window.location.pathname +
+      window.location.search +
+      window.location.hash;
+
+    const loginUrl = new URL("/login", window.location.origin);
+
+    const redirectToLogin = (
+      error: string,
+      preserveReturnTo = true
+    ) => {
+      loginUrl.searchParams.set("error", error);
+
+      if (preserveReturnTo) {
+        loginUrl.searchParams.set("returnTo", returnTo);
+      }
+
+      window.location.replace(loginUrl.toString());
+    };
+
     if (!token) {
-      redirect("login");
+      redirectToLogin("session");
       return;
     }
 
     try {
-      const response = await fetch(`${api}/auth/me`, {
+      console.log("[AuthGuard] Comprobando sesión:", {
+        endpoint: `${apiUrl}/auth/me`,
+        tokenExists: true,
+        requiredRoles,
+      });
+
+      const apiResponse = await fetch(`${apiUrl}/auth/me`, {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
         },
       });
 
-      if (!response.ok) {
-        localStorage.removeItem("api_access_token");
-        localStorage.removeItem("user_data");
-        redirect("login");
+      const responseText = await apiResponse.text();
+
+      let user;
+
+      try {
+        user = JSON.parse(responseText);
+      } catch {
+        console.error(
+          "[AuthGuard] La API no devolvió JSON:",
+          {
+            status: apiResponse.status,
+            response: responseText,
+          }
+        );
+
+        redirectToLogin("connection");
         return;
       }
 
-      const user = await response.json();
+      console.log("[AuthGuard] Respuesta de /auth/me:", {
+        status: apiResponse.status,
+        user,
+      });
 
-      // Mantener actualizados los datos del usuario.
-      localStorage.setItem("user_data", JSON.stringify(user));
+      if (!apiResponse.ok) {
+        console.error(
+          "[AuthGuard] La API rechazó el token:",
+          apiResponse.status,
+          user
+        );
 
-      const actualRole = String(user.rol ?? "").toUpperCase();
-
-      if (requiredRole && actualRole !== requiredRole) {
-        redirect("role");
+        localStorage.removeItem("access_token");
+        redirectToLogin("session");
         return;
       }
 
-      document.querySelector("#auth-loading")?.remove();
+      // Admite roles como ["ADMIN"] o [{ nombre: "ADMIN" }].
+      const rawRoles = Array.isArray(user.roles)
+        ? user.roles
+        : [];
 
-      const content = guard.querySelector<HTMLDivElement>(
-        "#protected-content"
-      );
+      const userRoles: string[] = rawRoles
+        .map((role: string | { nombre?: string }) =>
+          typeof role === "string" ? role : role?.nombre
+        )
+        .filter(
+          (role: string | undefined): role is string =>
+            typeof role === "string"
+        );
 
-      if (content) content.hidden = false;
+      const hasPermission =
+        requiredRoles.length === 0 ||
+        requiredRoles.some((role) => userRoles.includes(role));
 
-      guard.dataset.authorized = "true";
+      if (!hasPermission) {
+        console.warn("[AuthGuard] El usuario no tiene permisos:", {
+          requiredRoles,
+          userRoles,
+        });
 
-      document.dispatchEvent(
-        new CustomEvent("auth:authorized", {
-          detail: { user },
-        })
-      );
+        loginUrl.searchParams.set("error", "forbidden");
+        loginUrl.searchParams.set(
+          "required",
+          requiredRoles.join(", ")
+        );
+        loginUrl.searchParams.set(
+          "actual",
+          userRoles.join(", ") || "Sin roles"
+        );
 
+        loginUrl.searchParams.delete("returnTo");
+
+        window.location.replace(loginUrl.toString());
+        return;
+      }
+
+      console.log("[AuthGuard] Sesión y permisos comprobados.");
     } catch (error) {
-      console.error("Error verificando la sesión:", error);
+      console.error(
+        "[AuthGuard] Error de conexión al comprobar la sesión:",
+        error
+      );
 
-      const loading = document.querySelector("#auth-loading");
-
-      if (loading) {
-        loading.textContent = "Error de conexión al verificar la sesión.";
-      }
+      redirectToLogin("connection");
     }
-  }
-
-  protectPage();
+  });
 </script>

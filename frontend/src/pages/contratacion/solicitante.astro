@@ -1,0 +1,837 @@
+---
+import "../../style/global.css";
+import { LayoutLandingPage, Header } from "lity-ui";
+import { Icon } from "astro-icon/components";
+import AuthGuard from "../../components/AuthGuard.astro";
+
+// URL base de la API.
+// En producción se configura mediante PUBLIC_API_URL.
+const API_URL = (
+  import.meta.env.PUBLIC_API_URL || "http://localhost:8000"
+).replace(/\/+$/, "");
+
+// Rutas del frontend.
+const RUTA_LOGIN = "/login";
+const RUTA_EXAMENES = "/contratacion/examenes";
+---
+
+<LayoutLandingPage titlePage="Mis solicitudes | DREAM PROJECTS STUDIO">
+  <Header
+    slot="header"
+    title="DREAM PROJECTS STUDIO"
+    logoImg="/logo.webp"
+    showNavigation={true}
+    navigationTitle="Navegación"
+    navigationLinks={[
+      { label: "Inicio", href: "/#inicio", icon: "lucide:house" },
+   
+     { label: "Solicitar trabajo", href: "/contratacion/solicitud", icon: "lucide:clipboard-list" },
+    
+    ]}
+    showThemeSelector={true}
+    sticky={true}
+  />
+
+  <main
+    class="relative min-h-screen overflow-hidden bg-[var(--bg-primary)] px-4 py-12 text-[var(--text-primary)] sm:px-6 sm:py-16"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[var(--color-primary)]/10 blur-[100px]"
+    ></div>
+
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -right-32 top-[35rem] h-72 w-72 rounded-full bg-[var(--color-secondary)]/10 blur-[100px]"
+    ></div>
+
+    <!-- Comprueba los permisos del usuario. -->
+    <AuthGuard />
+
+    <div class="relative z-10 mx-auto max-w-5xl">
+      <!-- Encabezado de la página -->
+      <header class="mb-10">
+        <div class="flex flex-wrap items-center gap-3">
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10"
+          >
+            <Icon
+              name="lucide:files"
+              class="h-6 w-6 text-[var(--accent)]"
+            />
+          </div>
+
+          <div>
+            <p
+              class="text-xs font-bold tracking-[0.2em] text-[var(--accent)]"
+            >
+              DREAM PROJECTS STUDIO
+            </p>
+            <p class="mt-1 text-sm text-[var(--text-secondary)]">
+              Área de usuario
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="mt-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"
+        >
+          <div>
+            <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+              Mis solicitudes
+            </h1>
+
+            <p
+              class="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-secondary)] sm:text-base"
+            >
+              Consulta el estado de tu solicitud más reciente y revisa el
+              historial completo de las solicitudes que has enviado.
+            </p>
+          </div>
+
+          <!-- Acciones de la página -->
+          <div class="flex flex-wrap gap-3">
+            <!--
+              Este botón permanece oculto hasta que la API devuelva
+              un puesto_principal para la solicitud más reciente.
+            -->
+            <a
+              id="btn-realizar-examen"
+              href="#"
+              class="hidden min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+            >
+              <Icon name="lucide:file-pen-line" class="h-4 w-4" />
+              Realizar examen
+            </a>
+
+            <button
+              id="btn-actualizar"
+              type="button"
+              class="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] px-4 py-3 text-sm font-semibold transition hover:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+            >
+              <Icon name="lucide:rotate-cw" class="h-4 w-4" />
+              Actualizar
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Resumen de solicitudes -->
+      <section class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <article
+          class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-5"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--bg-tertiary)]"
+            >
+              <Icon
+                name="lucide:files"
+                class="h-5 w-5 text-[var(--text-secondary)]"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm text-[var(--text-secondary)]">
+                Total de solicitudes
+              </p>
+              <p id="total-solicitudes" class="mt-1 text-2xl font-bold">
+                —
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article
+          class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-5"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-primary)]/10"
+            >
+              <Icon
+                name="lucide:clock-3"
+                class="h-5 w-5 text-[var(--accent)]"
+              />
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <p class="text-sm text-[var(--text-secondary)]">
+                Estado de la última solicitud
+              </p>
+              <div id="resumen-estado" class="mt-1">
+                <span class="text-2xl font-bold">—</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Estado de carga -->
+      <section
+        id="estado-carga"
+        class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-10 text-center"
+        role="status"
+        aria-live="polite"
+      >
+        <Icon
+          name="lucide:loader-circle"
+          class="mx-auto h-9 w-9 animate-spin text-[var(--accent)]"
+        />
+
+        <p class="mt-4 font-semibold">Cargando tus solicitudes...</p>
+
+        <p class="mt-2 text-sm text-[var(--text-secondary)]">
+          Estamos consultando tu historial.
+        </p>
+      </section>
+
+      <!-- Estado de error -->
+      <section
+        id="estado-error"
+        class="hidden rounded-2xl border border-[var(--color-primary)]/30 bg-[var(--bg-secondary)] p-8 text-center"
+        role="alert"
+      >
+        <Icon
+          name="lucide:circle-alert"
+          class="mx-auto h-10 w-10 text-[var(--accent)]"
+        />
+
+        <h2 class="mt-4 text-xl font-bold">
+          No pudimos cargar tus solicitudes
+        </h2>
+
+        <p
+          id="mensaje-error"
+          class="mt-3 break-words text-sm leading-6 text-[var(--text-secondary)]"
+        >
+          Comprueba tu conexión e inténtalo nuevamente.
+        </p>
+
+        <button
+          id="btn-reintentar"
+          type="button"
+          class="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-bold text-white transition hover:opacity-90"
+        >
+          <Icon name="lucide:rotate-cw" class="h-4 w-4" />
+          Intentar de nuevo
+        </button>
+      </section>
+
+      <!-- Contenido que aparece cuando existen solicitudes -->
+      <div id="contenido-solicitudes" class="hidden space-y-10">
+        <!-- Solicitud más reciente -->
+        <section aria-labelledby="titulo-principal">
+          <div
+            class="mb-4 flex flex-wrap items-center justify-between gap-3"
+          >
+            <div>
+              <p
+                class="text-xs font-bold tracking-[0.18em] text-[var(--accent)]"
+              >
+                SOLICITUD PRINCIPAL
+              </p>
+
+              <h2
+                id="titulo-principal"
+                class="mt-2 text-2xl font-bold"
+              >
+                Tu última solicitud
+              </h2>
+            </div>
+
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 px-3 py-2 text-xs font-bold text-[var(--text-primary)]"
+            >
+              <Icon
+                name="lucide:star"
+                class="h-4 w-4 text-[var(--accent)]"
+              />
+              Más reciente
+            </span>
+          </div>
+
+          <div
+            id="solicitud-principal"
+            class="overflow-hidden rounded-2xl border border-[var(--color-primary)]/30 bg-[var(--bg-secondary)] shadow-xl shadow-black/20"
+          ></div>
+        </section>
+
+        <!-- Solicitudes anteriores -->
+        <section aria-labelledby="titulo-historial">
+          <div class="mb-5">
+            <p
+              class="text-xs font-bold tracking-[0.18em] text-[var(--text-muted)]"
+            >
+              REGISTROS ANTERIORES
+            </p>
+
+            <h2 id="titulo-historial" class="mt-2 text-2xl font-bold">
+              Historial de solicitudes
+            </h2>
+
+            <p class="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+              Aquí puedes consultar las solicitudes anteriores a la principal.
+            </p>
+          </div>
+
+          <div id="lista-historial" class="space-y-4"></div>
+
+          <div
+            id="historial-vacio"
+            class="hidden rounded-2xl border border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)] p-8 text-center"
+          >
+            <Icon
+              name="lucide:history"
+              class="mx-auto h-8 w-8 text-[var(--text-muted)]"
+            />
+
+            <p class="mt-3 font-semibold">
+              No tienes solicitudes anteriores
+            </p>
+
+            <p class="mt-2 text-sm text-[var(--text-secondary)]">
+              Tu solicitud más reciente aparece arriba.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Estado sin solicitudes -->
+      <section
+        id="sin-solicitudes"
+        class="hidden rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] px-6 py-12 text-center sm:px-12"
+      >
+        <div
+          class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--bg-tertiary)]"
+        >
+          <Icon
+            name="lucide:folder-open"
+            class="h-8 w-8 text-[var(--text-secondary)]"
+          />
+        </div>
+
+        <h2 class="mt-5 text-2xl font-bold">
+          Todavía no tienes solicitudes
+        </h2>
+
+        <p
+          class="mx-auto mt-3 max-w-md text-sm leading-7 text-[var(--text-secondary)]"
+        >
+          Cuando envíes una solicitud para formar parte del equipo, podrás
+          consultar aquí su estado y su historial.
+        </p>
+
+        <a
+          href="/solicitudes-trabajo"
+          class="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-6 py-3 text-sm font-bold text-white transition hover:opacity-90"
+        >
+          <Icon name="lucide:arrow-left" class="h-4 w-4" />
+          Ir a solicitudes
+        </a>
+      </section>
+    </div>
+  </main>
+</LayoutLandingPage>
+
+<script define:vars={{ API_URL, RUTA_LOGIN, RUTA_EXAMENES }}>
+  /*
+   * ============================================================
+   * 1. CONFIGURACIÓN
+   * ============================================================
+   *
+   * Si cambias el endpoint de la API, modifícalo aquí.
+   * La autenticación utiliza el token que ya guarda tu aplicación.
+   */
+
+  const API_BUSCAR = `${API_URL}/solicitudes-trabajo/buscar`;
+
+  /*
+   * ============================================================
+   * 2. REFERENCIAS A ELEMENTOS HTML
+   * ============================================================
+   *
+   * Centralizamos los elementos para no repetir selectores
+   * document.querySelector() por todo el código.
+   */
+
+  const elementos = {
+    carga: document.querySelector("#estado-carga"),
+    error: document.querySelector("#estado-error"),
+    mensajeError: document.querySelector("#mensaje-error"),
+    contenido: document.querySelector("#contenido-solicitudes"),
+    sinSolicitudes: document.querySelector("#sin-solicitudes"),
+
+    total: document.querySelector("#total-solicitudes"),
+    resumenEstado: document.querySelector("#resumen-estado"),
+    principal: document.querySelector("#solicitud-principal"),
+    historial: document.querySelector("#lista-historial"),
+    historialVacio: document.querySelector("#historial-vacio"),
+
+    botonActualizar: document.querySelector("#btn-actualizar"),
+    botonReintentar: document.querySelector("#btn-reintentar"),
+    botonExamen: document.querySelector("#btn-realizar-examen"),
+  };
+
+  /*
+   * ============================================================
+   * 3. CONFIGURACIÓN DE LOS CAMPOS
+   * ============================================================
+   *
+   * Esta lista determina qué datos se muestran en cada tarjeta.
+   *
+   * PARA AÑADIR OTRO CAMPO:
+   * 1. Comprueba que la API lo devuelva.
+   * 2. Añade una entrada aquí con su nombre y etiqueta.
+   *
+   * Ejemplo:
+   * { campo: "puesto_secundario", etiqueta: "Segundo puesto" }
+   *
+   * La propiedad "tipo" permite aplicar un formato especial.
+   */
+
+  const CAMPOS_SOLICITUD = [
+    { campo: "id", etiqueta: "Número de solicitud", prefijo: "#" },
+    { campo: "estado", etiqueta: "Estado", tipo: "estado" },
+    { campo: "puesto_principal", etiqueta: "Puesto principal" },
+    { campo: "correo", etiqueta: "Correo electrónico" },
+    { campo: "nombre_discord", etiqueta: "Usuario de Discord" },
+    {
+      campo: "fecha_creacion",
+      etiqueta: "Fecha de registro",
+      tipo: "fecha",
+    },
+  ];
+
+  /*
+   * ============================================================
+   * 4. UTILIDADES GENERALES
+   * ============================================================
+   */
+
+  // Cambia entre las vistas de carga, error, contenido y lista vacía.
+  function mostrarVista(vista) {
+    elementos.carga.classList.toggle("hidden", vista !== "carga");
+    elementos.error.classList.toggle("hidden", vista !== "error");
+    elementos.contenido.classList.toggle("hidden", vista !== "contenido");
+    elementos.sinSolicitudes.classList.toggle("hidden", vista !== "vacio");
+  }
+
+  // Recupera el token guardado por el sistema de autenticación.
+  function obtenerToken() {
+    return localStorage.getItem("access_token");
+  }
+
+  // Crea elementos HTML usando textContent para evitar interpretar
+  // datos de la API como HTML.
+  function crearElemento(tag, clases = "", texto = null) {
+    const elemento = document.createElement(tag);
+
+    if (clases) {
+      elemento.className = clases;
+    }
+
+    if (texto !== null && texto !== undefined) {
+      elemento.textContent = String(texto);
+    }
+
+    return elemento;
+  }
+
+  // Formatea fechas para mostrarlas en español.
+  function formatearFecha(fecha) {
+    if (!fecha) return "No disponible";
+
+    const valor = new Date(fecha);
+
+    if (Number.isNaN(valor.getTime())) {
+      return String(fecha);
+    }
+
+    return new Intl.DateTimeFormat("es-CO", {
+      dateStyle: "long",
+      timeStyle: "short",
+    }).format(valor);
+  }
+
+  /*
+   * ============================================================
+   * 5. ESTADOS DE LAS SOLICITUDES
+   * ============================================================
+   *
+   * Si tu API incorpora nuevos estados, agrégalos a esta
+   * configuración sin modificar la función que crea las etiquetas.
+   */
+
+  const ESTADOS = {
+    PENDIENTE: {
+      texto: "Pendiente",
+      clases: "border-amber-500/30 bg-amber-500/10 text-amber-400",
+    },
+    ACEPTADO: {
+      texto: "Aceptada",
+      clases: "border-green-500/30 bg-green-500/10 text-green-400",
+    },
+    RECHAZADO: {
+      texto: "Rechazada",
+      clases:
+        "border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 text-[var(--text-primary)]",
+    },
+    RECHAZADA: {
+      texto: "Rechazada",
+      clases:
+        "border-[var(--color-primary)]/30 bg-[var(--color-primary)]/10 text-[var(--text-primary)]",
+    },
+  };
+
+  function obtenerEstado(estado) {
+    const normalizado = String(estado ?? "").trim().toUpperCase();
+
+    return (
+      ESTADOS[normalizado] ?? {
+        texto: normalizado || "Sin estado",
+        clases:
+          "border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)]",
+      }
+    );
+  }
+
+  function crearEtiquetaEstado(estado) {
+    const configuracion = obtenerEstado(estado);
+
+    return crearElemento(
+      "span",
+      `inline-flex items-center rounded-full border px-3 py-1.5 text-xs font-bold ${configuracion.clases}`,
+      configuracion.texto
+    );
+  }
+
+  /*
+   * ============================================================
+   * 6. REPRESENTACIÓN DE LOS DATOS
+   * ============================================================
+   *
+   * Estas funciones crean las tarjetas a partir de los campos
+   * configurados en CAMPOS_SOLICITUD.
+   */
+
+  function obtenerValorCampo(solicitud, configuracion) {
+    let valor = solicitud[configuracion.campo];
+
+    if (valor === null || valor === undefined || valor === "") {
+      return "No disponible";
+    }
+
+    if (configuracion.prefijo) {
+      valor = `${configuracion.prefijo}${valor}`;
+    }
+
+    if (configuracion.tipo === "fecha") {
+      return formatearFecha(valor);
+    }
+
+    if (configuracion.tipo === "estado") {
+      return obtenerEstado(valor).texto;
+    }
+
+    return String(valor);
+  }
+
+  function crearCampo(etiqueta, valor) {
+    const contenedor = crearElemento(
+      "div",
+      "min-w-0 rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] p-4"
+    );
+
+    const titulo = crearElemento(
+      "p",
+      "text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]",
+      etiqueta
+    );
+
+    const contenido = crearElemento(
+      "p",
+      "mt-2 break-words text-sm font-semibold leading-6 text-[var(--text-primary)]",
+      valor
+    );
+
+    contenedor.append(titulo, contenido);
+
+    return contenedor;
+  }
+
+  function crearDetalles(solicitud) {
+    const contenedor = crearElemento(
+      "div",
+      "grid grid-cols-1 gap-3 sm:grid-cols-2"
+    );
+
+    // Los campos se generan automáticamente desde la configuración.
+    for (const configuracion of CAMPOS_SOLICITUD) {
+      // El estado ya aparece como etiqueta en la cabecera.
+      if (configuracion.tipo === "estado") continue;
+
+      const valor = obtenerValorCampo(solicitud, configuracion);
+
+      contenedor.append(
+        crearCampo(configuracion.etiqueta, valor)
+      );
+    }
+
+    return contenedor;
+  }
+
+  // Renderiza la tarjeta de la solicitud más reciente.
+  function renderizarPrincipal(solicitud) {
+    elementos.principal.replaceChildren();
+
+    const cabecera = crearElemento(
+      "div",
+      "border-b border-[var(--border-color)] p-5 sm:p-7"
+    );
+
+    const filaSuperior = crearElemento(
+      "div",
+      "flex flex-wrap items-center justify-between gap-3"
+    );
+
+    filaSuperior.append(
+      crearElemento(
+        "p",
+        "text-sm font-semibold text-[var(--text-secondary)]",
+        `Solicitud #${solicitud.id ?? "—"}`
+      ),
+      crearEtiquetaEstado(solicitud.estado)
+    );
+
+    const titulo = crearElemento(
+      "h3",
+      "mt-5 text-xl font-bold sm:text-2xl",
+      "Información de tu solicitud"
+    );
+
+    const descripcion = crearElemento(
+      "p",
+      "mt-2 text-sm leading-6 text-[var(--text-secondary)]",
+      "Este es tu registro más reciente y muestra el estado actual de tu solicitud."
+    );
+
+    cabecera.append(filaSuperior, titulo, descripcion);
+
+    const cuerpo = crearElemento("div", "p-5 sm:p-7");
+    cuerpo.append(crearDetalles(solicitud));
+
+    elementos.principal.append(cabecera, cuerpo);
+  }
+
+  // Renderiza todas las solicitudes anteriores a la principal.
+  function renderizarHistorial(solicitudes) {
+    elementos.historial.replaceChildren();
+
+    elementos.historialVacio.classList.toggle(
+      "hidden",
+      solicitudes.length > 0
+    );
+
+    for (const solicitud of solicitudes) {
+      const tarjeta = crearElemento(
+        "article",
+        "rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-5 transition hover:border-[var(--accent)]/50 sm:p-6"
+      );
+
+      const encabezado = crearElemento(
+        "div",
+        "flex flex-wrap items-start justify-between gap-3"
+      );
+
+      const titulo = crearElemento(
+        "h3",
+        "text-lg font-bold",
+        `Solicitud #${solicitud.id ?? "—"}`
+      );
+
+      encabezado.append(titulo, crearEtiquetaEstado(solicitud.estado));
+
+      const separador = crearElemento(
+        "div",
+        "my-5 h-px bg-[var(--border-color)]"
+      );
+
+      tarjeta.append(
+        encabezado,
+        separador,
+        crearDetalles(solicitud)
+      );
+
+      elementos.historial.append(tarjeta);
+    }
+  }
+
+  /*
+   * ============================================================
+   * 7. BOTÓN PARA REALIZAR EL EXAMEN
+   * ============================================================
+   *
+   * Utiliza el puesto_principal de la solicitud más reciente.
+   *
+   * Ejemplo:
+   * puesto_principal = "Scripter de Roblox (Luau)"
+   *
+   * URL resultante:
+   * /contratacion/examenes/Scripter%20de%20Roblox%20(Luau)
+   *
+   * encodeURIComponent evita que los espacios y otros caracteres
+   * rompan la URL.
+   */
+
+  function actualizarBotonExamen(solicitud) {
+    const boton = elementos.botonExamen;
+
+    // Por defecto, el botón está oculto y no apunta a otra página.
+    boton.classList.add("hidden");
+    boton.removeAttribute("href");
+
+    const puesto = solicitud?.puesto_principal;
+
+    // Sin puesto principal no se puede construir la URL del examen.
+    if (typeof puesto !== "string" || !puesto.trim()) {
+      return;
+    }
+
+    boton.href = `${RUTA_EXAMENES}/${encodeURIComponent(puesto.trim())}`;
+    boton.classList.remove("hidden");
+  }
+
+  /*
+   * ============================================================
+   * 8. ERRORES
+   * ============================================================
+   */
+
+  function mostrarError(mensaje) {
+    elementos.mensajeError.textContent = mensaje;
+    mostrarVista("error");
+  }
+
+  /*
+   * ============================================================
+   * 9. CARGA PRINCIPAL
+   * ============================================================
+   *
+   * Esta función consulta la API y actualiza toda la página.
+   * También se ejecuta cuando el usuario pulsa Actualizar.
+   */
+
+  async function cargarSolicitudes() {
+    mostrarVista("carga");
+
+    // Evita mostrar un botón de examen antiguo durante la carga.
+    actualizarBotonExamen(null);
+
+    const token = obtenerToken();
+
+    // El componente AuthGuard puede gestionar el acceso.
+    // Aquí mantenemos la comprobación para evitar llamadas sin token.
+    if (!token) {
+      window.location.replace(RUTA_LOGIN);
+      return;
+    }
+
+    try {
+      const respuesta = await fetch(API_BUSCAR, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (respuesta.status === 401) {
+        localStorage.removeItem("access_token");
+        window.location.replace(RUTA_LOGIN);
+        return;
+      }
+
+      if (!respuesta.ok) {
+        throw new Error(
+          `La API respondió con el estado HTTP ${respuesta.status}.`
+        );
+      }
+
+      const solicitudes = await respuesta.json();
+
+      if (!Array.isArray(solicitudes)) {
+        throw new Error(
+          "La API no devolvió una lista de solicitudes válida."
+        );
+      }
+
+      /*
+       * El backend debe ordenar por id DESC.
+       * Por ello, el primer registro es el más reciente.
+       */
+
+      if (solicitudes.length === 0) {
+        elementos.total.textContent = "0";
+
+        elementos.resumenEstado.replaceChildren(
+          crearElemento(
+            "span",
+            "text-2xl font-bold",
+            "Sin solicitudes"
+          )
+        );
+
+        elementos.principal.replaceChildren();
+        elementos.historial.replaceChildren();
+
+        mostrarVista("vacio");
+        return;
+      }
+
+      const ultima = solicitudes[0];
+      const anteriores = solicitudes.slice(1);
+
+      // Actualiza el resumen.
+      elementos.total.textContent = String(solicitudes.length);
+
+      elementos.resumenEstado.replaceChildren(
+        crearEtiquetaEstado(ultima.estado)
+      );
+
+      // Actualiza las tarjetas.
+      renderizarPrincipal(ultima);
+      renderizarHistorial(anteriores);
+
+      // El examen siempre se construye usando el último registro.
+      actualizarBotonExamen(ultima);
+
+      mostrarVista("contenido");
+    } catch (error) {
+      console.error("Error al cargar las solicitudes:", error);
+
+      mostrarError(
+        error instanceof Error
+          ? error.message
+          : "Ocurrió un error al consultar tus solicitudes."
+      );
+    }
+  }
+
+  /*
+   * ============================================================
+   * 10. EVENTOS
+   * ============================================================
+   */
+
+  elementos.botonActualizar.addEventListener("click", () => {
+    void cargarSolicitudes();
+  });
+
+  elementos.botonReintentar.addEventListener("click", () => {
+    void cargarSolicitudes();
+  });
+
+  // Consulta los datos al entrar en la página.
+  void cargarSolicitudes();
+</script>

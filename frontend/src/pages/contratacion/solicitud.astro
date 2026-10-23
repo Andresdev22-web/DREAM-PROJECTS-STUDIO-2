@@ -1,0 +1,319 @@
+---
+import "../../style/global.css";
+import { LayoutLandingPage, Header } from "lity-ui";
+import { Icon } from "astro-icon/components";
+import AuthGuard from "../../components/AuthGuard.astro";
+
+const API_URL = (import.meta.env.PUBLIC_API_URL || "http://localhost:8000")
+  .replace(/\/+$/, "");
+
+const ESTADO_URL = "/contratacion/solicitante";
+---
+
+<LayoutLandingPage titlePage="Solicitud de ingreso | DREAM PROJECTS STUDIO">
+  <Header
+    slot="header"
+    title="DREAM PROJECTS STUDIO"
+    logoImg="/logo.webp"
+    showNavigation={true}
+    navigationTitle="Navegación"
+    navigationLinks={[
+      { label: "Inicio", href: "/#inicio", icon: "lucide:house" },
+{ label: "Solicitudes enviadas", href: "/contratacion/solicitante", icon: "lucide:clipboard-list" },
+    ]}
+    showThemeSelector={true}
+    sticky={true}
+  />
+
+  <main class="relative flex min-h-screen justify-center overflow-hidden bg-[var(--bg-primary)] px-4 py-16 text-[var(--text-primary)] sm:px-6">
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-[var(--color-primary)]/10 blur-[100px]"
+    ></div>
+
+    <AuthGuard />
+
+    <section class="relative z-10 my-auto w-full max-w-2xl">
+      <div class="overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] shadow-2xl shadow-black/30">
+        <header class="border-b border-[var(--border-color)] p-7 sm:p-10">
+          <div class="flex items-center gap-4">
+            <img
+              src="/logo.webp"
+              alt="DREAM PROJECTS STUDIO"
+              width="56"
+              height="56"
+              class="h-14 w-14 rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)] object-contain p-2"
+            />
+
+            <div>
+              <p class="text-xs font-bold tracking-[0.2em] text-[var(--accent)]">
+                DREAM PROJECTS STUDIO
+              </p>
+              <p class="mt-2 text-sm text-[var(--text-secondary)]">
+                Reclutamiento de colaboradores
+              </p>
+            </div>
+          </div>
+
+          <h1 class="mt-8 text-3xl font-bold tracking-tight sm:text-4xl">
+            Solicitud de ingreso
+          </h1>
+
+          <p class="mt-4 text-sm leading-7 text-[var(--text-secondary)]">
+            Completa tus datos y selecciona el puesto al que quieres postularte
+            para formar parte de nuestro equipo.
+          </p>
+        </header>
+
+        <form id="solicitud-form" class="space-y-6 p-7 sm:p-10">
+          <!-- INPUT 1: correo -->
+          <div>
+            <label for="correo" class="mb-2 block text-sm font-semibold">
+              Correo electrónico *
+            </label>
+
+            <input
+              id="correo"
+              name="correo"
+              type="email"
+              placeholder="tu@correo.com"
+              autocomplete="email"
+              maxlength="254"
+              required
+              class="min-h-12 w-full rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+            />
+          </div>
+
+          <!-- INPUT 2: usuario de Discord -->
+          <div>
+            <label for="nombre_discord" class="mb-2 block text-sm font-semibold">
+              Usuario de Discord *
+            </label>
+
+            <input
+              id="nombre_discord"
+              name="nombre_discord"
+              type="text"
+              placeholder="Tu usuario de Discord"
+              maxlength="100"
+              required
+              class="min-h-12 w-full rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+            />
+          </div>
+
+          <!-- INPUT 3: puesto al que se postula -->
+          <div>
+            <label for="puesto_principal" class="mb-2 block text-sm font-semibold">
+              Puesto al que quieres postularte *
+            </label>
+
+            <select
+              id="puesto_principal"
+              name="puesto_principal"
+              required
+              class="min-h-12 w-full rounded-xl border border-[var(--border-color)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
+            >
+              <option value="Scripter-de-Roblox-Luau">Scripter de Roblox (Luau)</option>
+              <option value="Builder-Diseñador-de-mapas">Builder / Diseñador de mapas</option>
+              <option value="Diseñador-UI-UX">Diseñador UI/UX</option>
+              <option value="Animador-2D-3D">Animador 2D / 3D</option>
+              <option value="Concept-Artist">Concept Artist</option>
+              <option value="Artista-de-VFX">Artista de VFX</option>
+              <option value="Tester-QA">Tester / QA</option>
+              <option value="Coordinador-de-equipo">Coordinador de equipo</option>
+              <option value="Modelador-3D">Modelador 3D</option>
+              <option value="Diseñador-de-sonido">Diseñador de sonido</option>
+            </select>
+          </div>
+
+          <!-- Mensaje de respuesta -->
+          <p
+            id="mensaje"
+            class="hidden rounded-xl border border-[var(--border-color)] p-4 text-sm leading-6"
+            role="status"
+            aria-live="polite"
+          ></p>
+
+          <button
+            id="btn-enviar"
+            type="submit"
+            class="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-6 py-3 text-sm font-bold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Icon name="lucide:send" class="h-4 w-4" />
+            <span id="texto-boton">Enviar solicitud</span>
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+</LayoutLandingPage>
+<script define:vars={{ API_URL, ESTADO_URL }}>
+  // URLs de los endpoints de la API.
+  const API_BUSCAR = `${API_URL}/solicitudes-trabajo/buscar`;
+  const API_CREAR = `${API_URL}/solicitudes-trabajo/crear`;
+
+  // Elementos del formulario y de la interfaz.
+  const formulario = document.querySelector("#solicitud-form");
+  const botonEnviar = document.querySelector("#btn-enviar");
+  const textoBoton = document.querySelector("#texto-boton");
+  const mensaje = document.querySelector("#mensaje");
+
+  /**
+   * Muestra un mensaje al usuario.
+   * @param {string} texto - Texto que se mostrará.
+   * @param {boolean} correcto - Indica si la operación fue exitosa.
+   */
+  function mostrarMensaje(texto, correcto = false) {
+    mensaje.textContent = texto;
+    mensaje.classList.remove("hidden");
+
+    // Estilos para una respuesta exitosa.
+    mensaje.classList.toggle("border-green-500/30", correcto);
+    mensaje.classList.toggle("bg-green-500/10", correcto);
+    mensaje.classList.toggle("text-green-400", correcto);
+
+    // Estilos para una advertencia o error.
+    mensaje.classList.toggle("border-[var(--color-primary)]/30", !correcto);
+    mensaje.classList.toggle("bg-[var(--color-primary)]/10", !correcto);
+    mensaje.classList.toggle("text-[var(--text-primary)]", !correcto);
+  }
+
+  /**
+   * Consulta las solicitudes existentes del usuario.
+   *
+   * La API devuelve las solicitudes ordenadas por ID descendente,
+   * por lo que la primera es la más reciente.
+   *
+   * - PENDIENTE o ACEPTADO: redirige a la página de seguimiento.
+   * - RECHAZADO: permite volver a mostrar el formulario.
+   * - Sin solicitudes: permite mostrar el formulario.
+   *
+   * La autenticación se gestiona fuera de este script.
+   */
+  async function comprobarSolicitud() {
+    try {
+      // Obtiene el token guardado durante la autenticación.
+      const token = localStorage.getItem("access_token");
+
+      // Si no existe, no continúa. El componente de autenticación
+      // externo se encarga de gestionar el acceso.
+      if (!token) return;
+
+      const respuesta = await fetch(API_BUSCAR, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (!respuesta.ok) {
+        throw new Error(
+          `Error al consultar solicitudes: HTTP ${respuesta.status}`
+        );
+      }
+
+      const solicitudes = await respuesta.json();
+
+      // Comprueba que la API haya devuelto una lista.
+      if (!Array.isArray(solicitudes)) {
+        throw new Error("La API no devolvió una lista de solicitudes.");
+      }
+
+      // La primera solicitud es la más reciente.
+      const ultima = solicitudes[0];
+
+      // Si no hay solicitudes, el usuario puede completar el formulario.
+      if (!ultima) return;
+
+      const estado = String(ultima.estado || "").toUpperCase();
+
+      // Si está pendiente o aceptada, debe consultar su solicitud actual.
+      if (estado === "PENDIENTE" || estado === "ACEPTADO") {
+        window.location.replace(ESTADO_URL);
+        return;
+      }
+
+      // Si está rechazada, no se redirige y puede enviar otra solicitud.
+    } catch (error) {
+      console.error(error);
+      mostrarMensaje(
+        "No se pudieron consultar tus solicitudes. Comprueba la conexión e inténtalo de nuevo."
+      );
+    }
+  }
+
+  /**
+   * Envía una nueva solicitud a la API.
+   *
+   * Todos los campos del formulario que tengan el atributo name
+   * se recopilan automáticamente y se envían como JSON.
+   */
+  formulario.addEventListener("submit", async (evento) => {
+    // Evita que el navegador recargue la página.
+    evento.preventDefault();
+
+    // Comprueba los atributos required y las validaciones HTML.
+    if (!formulario.reportValidity()) return;
+
+    const token = localStorage.getItem("access_token");
+
+    // Si no hay token, deja que el componente externo gestione
+    // la autenticación y no envía la solicitud.
+    if (!token) return;
+
+    // Recopila automáticamente los campos del formulario.
+    // Ejemplo: { correo: "...", nombre_discord: "...", puesto: "..." }
+    const datos = Object.fromEntries(
+      new FormData(formulario).entries()
+    );
+
+    // Deshabilita el botón mientras se procesa la solicitud.
+    botonEnviar.disabled = true;
+    textoBoton.textContent = "Enviando...";
+    mensaje.classList.add("hidden");
+
+    try {
+      const respuesta = await fetch(API_CREAR, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(datos),
+      });
+
+      // Intenta leer la respuesta como JSON.
+      const resultado = await respuesta.json().catch(() => ({}));
+
+      if (!respuesta.ok) {
+        throw new Error(
+          typeof resultado.detail === "string"
+            ? resultado.detail
+            : `Error al enviar la solicitud: HTTP ${respuesta.status}`
+        );
+      }
+
+      // Informa del éxito y redirige a la página de seguimiento.
+      mostrarMensaje(
+        "Solicitud enviada correctamente. Redirigiendo...",
+        true
+      );
+
+      window.location.assign(ESTADO_URL);
+    } catch (error) {
+      console.error(error);
+
+      mostrarMensaje(
+        error.message || "No se pudo enviar la solicitud."
+      );
+    } finally {
+      // Restaura el botón si la página sigue abierta.
+      botonEnviar.disabled = false;
+      textoBoton.textContent = "Enviar solicitud";
+    }
+  });
+
+  // Al cargar el script, verifica si existe una solicitud anterior.
+  comprobarSolicitud();
+</script>
