@@ -1,0 +1,23 @@
+name: api-dreamProjectsStudio
+
+services:
+  api:
+    build: .
+    container_name: api_dreamProjectsStudio_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.api-dreamProjectsStudio.rule=Host(`dreamprojectsstudioapi2.nanadev.online`)"
+      - "traefik.http.routers.api-dreamProjectsStudio.entrypoints=websecure"
+      - "traefik.http.routers.api-dreamProjectsStudio.tls=true"
+      - "traefik.http.routers.api-dreamprojectsstudio.tls.certresolver=myresolver"
+      - "traefik.http.services.api-dreamprojectsstudio.loadbalancer.server.port=8000"
+
+networks:
+  web:
+    external: true

@@ -1,0 +1,16 @@
+name: api-dreamProjectsStudio-local
+
+services:
+  api:
+    build:
+      context: .
+    container_name: api_dreamProjectsStudio_local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_NAME: /app/data/app.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
